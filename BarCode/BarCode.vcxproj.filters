@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="libusb">
+      <UniqueIdentifier>{38ea3e48-3cde-45a4-b553-9cb62f054d27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libusb\include">
+      <UniqueIdentifier>{c6f470f6-5bfc-4531-8da8-7ec0838fa4cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libusb\lib">
+      <UniqueIdentifier>{cc0f8ed4-edad-446c-b0e9-7d5c500df75f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="文档">
+      <UniqueIdentifier>{b9dbb68f-8f93-405e-8f77-16e637cb28b6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\USBWrapper.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\barcode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\libusb-1.0\libusb.h">
+      <Filter>libusb\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FileLog.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\barcode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\USBWrapper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FileLog.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\MS32\dll\libusb-1.0.lib">
+      <Filter>libusb\lib</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
