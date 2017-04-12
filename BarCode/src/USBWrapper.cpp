@@ -202,6 +202,8 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 			*pOutLen = return_code.length();
 			scanner_code = "";
 
+			gLog.info(return_code);
+
 			return OK;
 		}
 	}

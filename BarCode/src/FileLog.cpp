@@ -45,7 +45,7 @@ void FileLog::Log(std::string log, int logLevel, std::string logFile)
 		
 
 		std::stringstream ss;
-		ss << "时间：" << std::setfill('0') << std::setw(2) << st.wHour << ":" << std::setfill('0') << std::setw(2) << st.wMinute << ":" << std::setfill('0') << std::setw(2) << st.wSecond << "\n";
+		ss << "时间：" << std::setfill('0') << std::setw(2) << st.wHour << ":" << std::setfill('0') << std::setw(2) << st.wMinute << ":" << std::setfill('0') << std::setw(2) << st.wSecond <<  ":" << st.wMilliseconds << "\n";
 
 		ss << "内容：" << log << "\n";
 		ss << "\n";
