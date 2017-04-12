@@ -35,8 +35,9 @@ BEGIN_MESSAGE_MAP(CUSBDemoDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CUSBDemoDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON3, &CUSBDemoDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &CUSBDemoDlg::OnBnClickedButton4)
-	ON_BN_CLICKED(IDC_BUTTON2, &CUSBDemoDlg::OnBnClickedButton2)
+	
 	ON_BN_CLICKED(IDC_BUTTON5, &CUSBDemoDlg::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_BUTTON2, &CUSBDemoDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -52,6 +53,10 @@ BOOL CUSBDemoDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	if (!LoadDLL())
+		return FALSE;
+
+	hThread = INVALID_HANDLE_VALUE;
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -94,6 +99,56 @@ HCURSOR CUSBDemoDlg::OnQueryDragIcon()
 
 
 
+bool CUSBDemoDlg::LoadDLL()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	hModule = LoadLibrary("Bar_Code.dll");
+	if (hModule == NULL)
+	{
+		AfxMessageBox("load BarCode.dll error.");
+		return false;
+	}
+
+	BAR_Init = (fpBAR_Init)GetProcAddress(hModule, "BAR_Init");
+	if (BAR_Init == NULL)
+	{
+		AfxMessageBox("GetProcAddress BAR_Init error.");
+		return false;
+	}
+
+	BAR_Uninit = (fpBAR_Uninit)GetProcAddress(hModule, "BAR_Uninit");
+	if (BAR_Uninit == NULL)
+	{
+		AfxMessageBox("GetProcAddress BAR_Uninit error.");
+		return false;
+	}
+
+	BAR_GetSerial = (fpBAR_GetSerial)GetProcAddress(hModule, "BAR_GetSerial");
+	if (BAR_GetSerial == NULL)
+	{
+		AfxMessageBox("GetProcAddress BAR_GetSerial error.");
+		return false;
+	}
+
+	BAR_ReadData = (fpBAR_ReadData)GetProcAddress(hModule, "BAR_ReadData");
+	if (BAR_ReadData == NULL)
+	{
+		AfxMessageBox("GetProcAddress BAR_ReadData error.");
+		return false;
+	}
+
+	BAR_GetStatus = (fpBAR_GetStatus)GetProcAddress(hModule, "BAR_GetStatus");
+	if (BAR_GetStatus == NULL)
+	{
+		AfxMessageBox("GetProcAddress BAR_GetStatus error.");
+		return false;
+	}
+
+	AfxMessageBox("加载dll成功");
+	return true;
+}
+
+
 void CUSBDemoDlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -111,21 +166,33 @@ void CUSBDemoDlg::OnBnClickedButton1()
 	{
 		CString msg = _T("打开设备失败");
 		AfxMessageBox(msg);
-	}
-
-	
+	}	
 }
 
-void CUSBDemoDlg::OnBnClickedButton4()
+
+void CUSBDemoDlg::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	char * pIn = "1000";
+	char pOut[256] = { 0 };
+
+	if (BAR_Uninit(pIn, pOut) == 0)
+	{
+		AfxMessageBox(_T("关闭设备成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("关闭设备失败"));
+	}
+}
+
+//限时5秒读取
+void CUSBDemoDlg::OnBnClickedButton4()
+{
 	//char * pIn = "0"; //10秒
 	char * pIn = "5000"; //5000毫秒
 	char pOut[1024] = { 0 };
 	int outlen;
-
-	
-
 
 	if (BAR_ReadData(pIn, pOut, &outlen) == 0)
 	{
@@ -144,86 +211,72 @@ void CUSBDemoDlg::OnBnClickedButton4()
 		//TRACE(msg);
 		AfxMessageBox(msg);
 	}
-
-	
 }
 
-
-void CUSBDemoDlg::OnBnClickedButton3()
+//启动轮询线程
+void CUSBDemoDlg::OnBnClickedButton5()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	char * pIn = "1000";
-	char pOut[256] = { 0 };
+	if (hThread != INVALID_HANDLE_VALUE) {
+		AfxMessageBox("模式2的读取线程正在运行，不能重复运行");
+		return;
+	}
 
-	if (BAR_Uninit(pIn, pOut) == 0)
-	{
-		AfxMessageBox(_T("关闭设备成功"));
-	}
-	else
-	{
-		AfxMessageBox(_T("关闭设备失败"));
-	}
-	
+	run = true;
+	hThread = CreateThread(NULL, 0, CUSBDemoDlg::MyThreadFunction, this, 0, NULL);
 }
 
+//轮询线程函数
+DWORD WINAPI CUSBDemoDlg::MyThreadFunction(LPVOID lpParam)
+{
+	if (lpParam == NULL)
+		return -1;
+
+	CUSBDemoDlg*  pThis = (CUSBDemoDlg*)lpParam;
+	char * pIn = "0"; //0毫秒
+	char pOut[1024] = { 0 };
+	int outlen;
+	
+
+	while (pThis->run)
+	{
+		if (pThis->BAR_ReadData(pIn, pOut, &outlen) == 0)
+		{
+			CString msg;
+			msg.Format("模式2：读二维码成功 %s 长度 %d\n", pOut, outlen);
+			TRACE(msg);
+			AfxMessageBox(msg);
+
+		}
+		else
+		{
+			CString msg;
+			msg.Format("模式2: 读二维码失败\n");
+
+			//TRACE(msg);
+			
+		}
+
+		//20毫秒轮询一次
+		Sleep(20);
+	}
+
+	return 0;
+}
 
 
 void CUSBDemoDlg::OnBnClickedButton2()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	hModule = LoadLibrary("Bar_Code.dll");
-	if (hModule == NULL)
-	{
-		AfxMessageBox("load BarCode.dll error.");
-		return;
-	}
-
-	BAR_Init = (fpBAR_Init)GetProcAddress(hModule, "BAR_Init");
-	if (BAR_Init == NULL)
-	{
-		AfxMessageBox("GetProcAddress BAR_Init error.");
-		return;
-	}
-
-	BAR_Uninit = (fpBAR_Uninit)GetProcAddress(hModule, "BAR_Uninit");
-	if (BAR_Uninit == NULL)
-	{
-		AfxMessageBox("GetProcAddress BAR_Uninit error.");
-		return;
-	}
-
-	BAR_GetSerial = (fpBAR_GetSerial)GetProcAddress(hModule, "BAR_GetSerial");
-	if (BAR_GetSerial == NULL)
-	{
-		AfxMessageBox("GetProcAddress BAR_GetSerial error.");
-		return;
-	}
-
-	BAR_ReadData = (fpBAR_ReadData)GetProcAddress(hModule, "BAR_ReadData");
-	if (BAR_ReadData == NULL)
-	{
-		AfxMessageBox("GetProcAddress BAR_ReadData error.");
-		return;
-	}
-
-	BAR_GetStatus = (fpBAR_GetStatus)GetProcAddress(hModule, "BAR_GetStatus");
-	if (BAR_GetStatus == NULL)
-	{
-		AfxMessageBox("GetProcAddress BAR_GetStatus error.");
-		return;
-	}
-
-	AfxMessageBox("加载dll成功");
+	CloseThread();
 }
 
-
-void CUSBDemoDlg::OnBnClickedButton5()
+void CUSBDemoDlg::CloseThread()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	char * pIn = "1000";
-	char pOut[1024] = { 0 };
+	run = false;
 
-	BAR_GetStatus(pIn, pOut);
-
-	AfxMessageBox(pOut);
+	WaitForSingleObject(hThread, INFINITE);
+	CloseHandle(hThread);
+	hThread = INVALID_HANDLE_VALUE;
+	
+	TRACE("结束线程\n");
 }

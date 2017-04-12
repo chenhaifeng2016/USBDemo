@@ -141,6 +141,26 @@ int USBWrapper::OpenDevice()
 	return OK;
 }
 
+int USBWrapper::CloseDevice()
+{
+	if (devh != NULL)
+	{
+		libusb_release_interface(devh, 0);
+		libusb_close(devh);
+
+		devh = NULL;
+		dev = NULL;
+	}
+
+	if (ctx != NULL)
+	{
+		libusb_exit(ctx);
+		ctx = NULL;
+	}
+
+	return OK;
+}
+
 
 
 int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
@@ -272,6 +292,7 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 		r = libusb_interrupt_transfer(devh, epInput->bEndpointAddress, (unsigned char*)&packet, sizeof(packet), &rlen, 0); //block
 		if (r < 0)
 		{
+			gLog.error("ReadPacket libusb_interrupt_transfer");
 			return r;
 		}
 
@@ -284,15 +305,21 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 		}
 
 		if (rlen != sizeof(packet)) // not valid packet.
+		{
+			gLog.error("ReadPacket -101");
 			return -101;
+		}
+			
 
 		if (packet.packetId != EM_HID_POS_OUT_PACKECT_ID_IN)
 		{
+			gLog.error("ReadPacket -102");
 			return -102;
 		}
 
 		if (packet.dataLength > sizeof(packet.data))
 		{
+			gLog.error("ReadPacket -103");
 			return -103;
 		}
 
@@ -311,26 +338,6 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 	}//end while
 
 	return ilen; // 返回总长度
-}
-
-int USBWrapper::CloseDevice()
-{
-	if (devh != NULL)
-	{
-		libusb_release_interface(devh, 0);
-		libusb_close(devh);
-
-		devh = NULL;
-		dev = NULL;
-	}
-
-	if (ctx != NULL)
-	{
-		libusb_exit(ctx);
-		ctx = NULL;
-	}
-
-	return OK;
 }
 
 
@@ -392,7 +399,7 @@ void USBWrapper::ScanThread(void * arg)
 
 		if (rlen < 0)
 		{
-			//TRACE("rlen < 0\n");
+			gLog.error("扫描线程扫描失败退出线程 if (rlen < 0)");
 			return;
 		}
 
@@ -416,6 +423,7 @@ void USBWrapper::ScanThread(void * arg)
 
 		sprintf(msg, "二维码%s\n", szRxBuf);
 		OutputDebugString(msg);
+		
 		
 
 		pThis->scanner_code = szRxBuf;

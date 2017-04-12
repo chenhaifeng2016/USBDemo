@@ -44,7 +44,7 @@ public:
 
 	
 	int count;
-	afx_msg void OnBnClickedButton2();
+	bool LoadDLL();
 
 	HMODULE hModule;
 	fpBAR_Init  BAR_Init;
@@ -53,4 +53,12 @@ public:
 	fpBAR_ReadData  BAR_ReadData;
 	fpBAR_GetStatus  BAR_GetStatus;
 	afx_msg void OnBnClickedButton5();
+
+	HANDLE hThread;
+
+	static DWORD WINAPI MyThreadFunction(LPVOID lpParam);
+	afx_msg void OnBnClickedButton2();
+
+	void CloseThread();
+	bool run;
 };
