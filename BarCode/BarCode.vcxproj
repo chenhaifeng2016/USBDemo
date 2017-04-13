@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\include\libusb-1.0\libusb.h" />
     <ClInclude Include="include\barcode.h" />
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\FileLog.h" />
     <ClInclude Include="src\USBWrapper.h" />
   </ItemGroup>
@@ -168,6 +169,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\barcode.cpp" />
+    <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\FileLog.cpp" />
     <ClCompile Include="src\USBWrapper.cpp" />
   </ItemGroup>

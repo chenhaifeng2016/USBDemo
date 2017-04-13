@@ -3,6 +3,7 @@
 
 #include "libusb.h"
 #include <string>
+#include <process.h>
 
 #define OK   0
 #define ERR -1
@@ -39,6 +40,8 @@ EM_HID_POS_OUT_PACKECT_ID;
 #pragma pack(pop)
 
 //typedef void(*CallbackFunc)(char*); //声明回调函数
+
+
 
 class USBWrapper
 {

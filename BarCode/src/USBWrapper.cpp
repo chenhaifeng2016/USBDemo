@@ -5,8 +5,10 @@
 
 #include "USBWrapper.h"
 #include "FileLog.h"
+#include "Config.h"
 
-
+//临界区
+CRITICAL_SECTION gCriticalSec;
 
 USBWrapper::USBWrapper()
 {
@@ -21,11 +23,15 @@ USBWrapper::USBWrapper()
 	hThread = INVALID_HANDLE_VALUE;
 	//mCallbackFunc = NULL;
 	return_code = "";
+
+	InitializeCriticalSection(&gCriticalSec);
+
 }
 
 
 USBWrapper::~USBWrapper()
 {
+	DeleteCriticalSection(&gCriticalSec);
 }
 
 int USBWrapper::OpenDevice()
@@ -185,14 +191,19 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 	}
 	catch (...)
 	{
-		timeout = 0;
+		return ERR;
 	}
 	
-	//一个是不知道什么时间放票，要传0,每隔20毫秒调用一次，保证能及时获得二维码
+	
+	EnterCriticalSection(&gCriticalSec);
+
 	if (timeout == 0)
 	{
+		//一个是不知道什么时间放票，要传0,每隔20毫秒调用一次，保证能及时获得二维码
+
 		if (scanner_code.length() == 0)
 		{
+			LeaveCriticalSection(&gCriticalSec);
 			return ERR;
 		}
 		else
@@ -202,8 +213,9 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 			*pOutLen = return_code.length();
 			scanner_code = "";
 
-			gLog.info(return_code);
+			gLog.info("通过轮询方式获取" + return_code);
 
+			LeaveCriticalSection(&gCriticalSec);
 			return OK;
 		}
 	}
@@ -243,11 +255,6 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 		else
 		{
 			//有二维码，判断和上次返回的是不是同一张票的二维码
-
-			//if (scanner_code.compare(return_code) != 0)
-			{
-				
-
 				return_code = scanner_code;
 
 				memcpy(pData, return_code.c_str(), return_code.length());
@@ -255,16 +262,9 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 
 				scanner_code = "";
 				
+				gLog.info("通过限时方式获取" + return_code);
 
-				return 0;
-			}
-			/*
-			else
-			{
-				scanner_code = "";
-				continue;
-			}
-			*/
+				return OK;
 		}			
 	} // end while
 	
@@ -389,9 +389,19 @@ void USBWrapper::ScanThread(void * arg)
 	USBWrapper * pThis = (USBWrapper*) arg;
 
 	
-	char msg[256] = { 0 };
+	std::string prevcode = "";
+
+	clock_t beginTime;
+	beginTime = clock();
+
+	clock_t endTime;
+	endTime = clock();
+
+	int timeInterval = endTime - beginTime;
+	int timeout = gConfig.timeout;//ms
 
 
+		
 	while (pThis->working)
 	{
 		memset(szRxBuf, 0x00, sizeof(szRxBuf));
@@ -422,15 +432,44 @@ void USBWrapper::ScanThread(void * arg)
 
 			break;
 		}
-
-		sprintf(msg, "二维码%s\n", szRxBuf);
-		OutputDebugString(msg);
 		
+		endTime = clock();
+		timeInterval = endTime - beginTime;
+
+		std::string code = szRxBuf;
+		if (code.compare(prevcode) != 0)
+		{
+			//不同票，直接返回
+			prevcode = code;
+			pThis->scanner_code = szRxBuf;
+			beginTime = endTime;
+			gLog.info2(szRxBuf);
+			OutputDebugString("不同票返回...\n");
+		}
+		else
+		{
+			//同票被扫描多次
+
+			if (timeInterval < timeout)
+			{
+				// 不超时
+				OutputDebugString("同票没有超时，不返回...\n");
+			}
+			else
+			{
+				//超时
+				prevcode = code;
+				pThis->scanner_code = szRxBuf;
+				beginTime = endTime;
+				gLog.info2(szRxBuf);
+				OutputDebugString("同票超时返回...\n");
+				//prevcode = "";
+
+			}
+		}
 		
 
-		pThis->scanner_code = szRxBuf;
-
-		Sleep(1*1000);
+		Sleep(5);
 	}
 	
 	//TRACE(".................读线程退出.................\n");

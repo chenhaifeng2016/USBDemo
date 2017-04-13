@@ -16,11 +16,12 @@ public:
 	FileLog(void);
 	~FileLog(void);
 
-	void Log(std::string log, int logLevel=0, std::string logFile="apdu");
+	void Log(std::string log, int logLevel=0, std::string logFile="info");
 
 	
 	void debug(std::string log);
 	void info(std::string log);
+	void info2(std::string log);
 	void warn(std::string log);
 	void error(std::string log);
 };

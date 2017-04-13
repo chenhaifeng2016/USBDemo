@@ -1,6 +1,7 @@
 #include "../include/barcode.h"
 #include "USBWrapper.h"
 #include "FileLog.h"
+#include "Config.h"
 
 USBWrapper usb;
 
@@ -8,6 +9,8 @@ WORD WINAPI BAR_Init(char *pIn, char* pOut)
 {
 	int r = 0;
 	
+	gConfig.ReadConfigFile();
+
 	r = usb.OpenDevice();
 
 	if (r < 0)

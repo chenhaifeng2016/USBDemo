@@ -34,7 +34,7 @@ void FileLog::Log(std::string log, int logLevel, std::string logFile)
 	CreateDirectory("d:\\barcode_log", NULL);
 
 	std::stringstream filename;
-	filename << "d:\\barcode_log\\barcode_" << st.wYear << "_" << st.wMonth << "_" << st.wDay << ".log";
+	filename << "d:\\barcode_log\\barcode_" << st.wYear << "_" << st.wMonth << "_" << st.wDay << "_" << logFile << ".log";
 
 	f.open(filename.str(), std::ios::app);
 
@@ -43,10 +43,10 @@ void FileLog::Log(std::string log, int logLevel, std::string logFile)
 	if (f.is_open())
 	{
 		
-
+		
 		std::stringstream ss;
 		ss << "时间：" << std::setfill('0') << std::setw(2) << st.wHour << ":" << std::setfill('0') << std::setw(2) << st.wMinute << ":" << std::setfill('0') << std::setw(2) << st.wSecond <<  ":" << st.wMilliseconds << "\n";
-
+		ss << "线程id: " << GetCurrentThreadId() << "\n";
 		ss << "内容：" << log << "\n";
 		ss << "\n";
 		
@@ -58,20 +58,25 @@ void FileLog::Log(std::string log, int logLevel, std::string logFile)
 
 void FileLog::debug(std::string log)
 {
-	Log(log, LOG_LEVEL_DEBUG);
+	Log(log, LOG_LEVEL_DEBUG, "debug");
 }
 
 void FileLog::info(std::string log)
 {
-	Log(log, LOG_LEVEL_INFO);
+	Log(log, LOG_LEVEL_INFO, "info");
+}
+
+void FileLog::info2(std::string log)
+{
+	Log(log, LOG_LEVEL_INFO, "info2");
 }
 
 void FileLog::warn(std::string log)
 {
-	Log(log, LOG_LEVEL_WARN);
+	Log(log, LOG_LEVEL_WARN, "warn");
 }
 
 void FileLog::error(std::string log)
 {
-	Log(log, LOG_LEVEL_ERROR);
+	Log(log, LOG_LEVEL_ERROR, "error");
 }
