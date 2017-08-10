@@ -7,7 +7,7 @@
 #include <windows.h>
 
 #include "FileLog.h"
-
+#include "Config.h"
 
 FileLog gLog;
 
@@ -23,6 +23,9 @@ FileLog::~FileLog(void)
 
 void FileLog::Log(std::string log, int logLevel, std::string logFile)
 {
+	if (gConfig.log == 0)
+		return;
+
 	std::fstream f;
 
 	SYSTEMTIME st;

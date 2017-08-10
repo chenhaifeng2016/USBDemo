@@ -38,6 +38,7 @@ BEGIN_MESSAGE_MAP(CUSBDemoDlg, CDialogEx)
 	
 	ON_BN_CLICKED(IDC_BUTTON5, &CUSBDemoDlg::OnBnClickedButton5)
 	ON_BN_CLICKED(IDC_BUTTON2, &CUSBDemoDlg::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_READ_DEVICE_INFO, &CUSBDemoDlg::OnBnClickedReadDeviceInfo)
 END_MESSAGE_MAP()
 
 
@@ -141,6 +142,13 @@ bool CUSBDemoDlg::LoadDLL()
 	if (BAR_GetStatus == NULL)
 	{
 		AfxMessageBox("GetProcAddress BAR_GetStatus error.");
+		return false;
+	}
+
+	BAR_GetDeviceInfo = (fpBAR_GetDeviceInfo)GetProcAddress(hModule, "BAR_GetDeviceInfo");
+	if (BAR_GetDeviceInfo == NULL)
+	{
+		AfxMessageBox("GetProcAddress BAR_GetDeviceInfo error.");
 		return false;
 	}
 
@@ -279,4 +287,15 @@ void CUSBDemoDlg::CloseThread()
 	hThread = INVALID_HANDLE_VALUE;
 	
 	TRACE("结束线程\n");
+}
+
+
+void CUSBDemoDlg::OnBnClickedReadDeviceInfo()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	char * pIn = NULL;
+	char pOut[200] = { 0x00 };
+
+	BAR_GetDeviceInfo(pIn, pOut);
+	AfxMessageBox(pOut);
 }

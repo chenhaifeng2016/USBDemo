@@ -15,6 +15,7 @@ typedef struct
 {
 	unsigned char packetId;// FIXED 0x02.
 	unsigned char dataLength;
+
 	unsigned char data[56];
 	unsigned char AIMID[3];
 	unsigned char reserved[2];
@@ -24,9 +25,9 @@ typedef struct
 
 typedef struct
 {
-	unsigned char packetId; // FIXED 0x04.649640
-
+	unsigned char packetId; // FIXED 0x04
 	unsigned char dataLength;
+
 	unsigned char data[62];
 } ST_HID_POS_OUT_PACKECT;
 
@@ -53,6 +54,7 @@ public:
 	int OpenDevice();//打开设备
 	int CloseDevice();//关闭设备
 	int ReadData(char *pIn, char *pOut, int *pOutLen);
+	bool ReadSerialNo(char * pOut);
 
 	bool StartReadThread();//建立读线程
 	void StopReadThread();//关闭读线程
@@ -81,6 +83,7 @@ private:
 	
 	std::string scanner_code;
 	std::string return_code;
+	std::string serialNo;
 };
 
 #endif

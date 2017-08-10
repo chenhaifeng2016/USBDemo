@@ -331,6 +331,22 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 			sprintf(buf, "len = %d\n", packet.dataLength);
 			OutputDebugString(buf);
 
+			if (packet.dataLength == 0x12) //18个字节
+			{
+				//prefix2(0x02 0x00)    长度2字节(data + LRC)   type(0x34)   data   LRC
+				if (packet.data[0] == 0x02 && packet.data[1] == 0x00 && packet.data[4] == 0x34)
+				{
+					int len = packet.data[3] - 1; //去掉最后的LRC
+					char *data = new char[len + 1];
+					memset(data, 0x00, len + 1);
+					memcpy(data, packet.data + 5, len);
+					serialNo = data;
+					delete[] data;
+
+					return 0; // 固定返回0，留给前端处理
+				}
+			}
+
 			memcpy(pdata + ilen, packet.data, packet.dataLength);
 			ilen += packet.dataLength;
 		}
@@ -342,7 +358,49 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 	return ilen; // 返回总长度
 }
 
+bool USBWrapper::ReadSerialNo(char * pOut)
+{
+	//char cmd[] = {0x7E0x000x000x050x330x480x300x330x300xB2};
+	int rlen = 0;
 
+	ST_HID_POS_OUT_PACKECT packet;
+	memset(&packet, 0, sizeof(ST_HID_POS_OUT_PACKECT));
+
+	packet.packetId = 0x04;
+	packet.dataLength = 0x0a;
+
+	packet.data[0] = 0x7E; // prefix
+	packet.data[1] = 0x00;
+
+	packet.data[2] = 0x00; // len
+	packet.data[3] = 0x05;
+
+	packet.data[4] = 0x33; //type
+
+	packet.data[5] = 0x48; // data
+	packet.data[6] = 0x30;
+	packet.data[7] = 0x33;
+	packet.data[8] = 0x30;
+
+	packet.data[9] = 0xB2; //lrc
+
+	int r = libusb_interrupt_transfer(devh, epOutput->bEndpointAddress, (unsigned char*)&packet, sizeof(packet), &rlen, 0); //block
+	if (r != 0)
+		return false;
+
+	// 等待返回结果，这里没有采用事件通知
+	while (true)
+	{
+		if (serialNo.length() < 12) // 最好判断长度
+			continue;
+
+		memcpy(pOut, serialNo.c_str(), serialNo.length());
+		serialNo = "";
+		break;
+	}
+
+	return true;
+}
 
 bool USBWrapper::StartReadThread()
 {

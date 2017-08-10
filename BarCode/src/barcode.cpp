@@ -78,3 +78,24 @@ WORD WINAPI BAR_GetStatus(char *pIn, char* pOut)
 	return 0;
 }
 
+WORD WINAPI BAR_GetDeviceInfo(char *pIn, char *pOut)
+{
+	// 0x7E0x00 0x000x05 0x33 0x480x300x330x30 0xB2
+
+	//0x7E0x000x000x050x330x480x300x330x300xB2
+	// 新大陆 NLS-EM20
+
+	
+	char serialNo[50] = { 0 };
+	
+	if (usb.ReadSerialNo(serialNo))
+	{
+		sprintf(pOut, "%s,%s,%s", serialNo, "新大陆", "NLS-EM20");
+		return 1;
+	}
+	else
+	{
+		sprintf(pOut, "%s,%s,%s", "000000000000", "新大陆", "NLS-EM20");
+		return 0;
+	}
+}

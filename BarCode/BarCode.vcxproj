@@ -173,6 +173,9 @@
     <ClCompile Include="src\FileLog.cpp" />
     <ClCompile Include="src\USBWrapper.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="barcode.def" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

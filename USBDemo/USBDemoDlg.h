@@ -9,6 +9,7 @@ typedef WORD (WINAPI *fpBAR_Uninit) (char *, char *);
 typedef WORD (WINAPI *fpBAR_GetSerial) (char *);
 typedef WORD (WINAPI *fpBAR_ReadData) (char *, char *, int *);
 typedef WORD (WINAPI *fpBAR_GetStatus) (char *, char *);
+typedef WORD(WINAPI *fpBAR_GetDeviceInfo) (char*, char*);
 
 // CUSBDemoDlg ¶Ô»°¿ò
 class CUSBDemoDlg : public CDialogEx
@@ -52,6 +53,8 @@ public:
 	fpBAR_GetSerial  BAR_GetSerial;
 	fpBAR_ReadData  BAR_ReadData;
 	fpBAR_GetStatus  BAR_GetStatus;
+	fpBAR_GetDeviceInfo BAR_GetDeviceInfo;
+
 	afx_msg void OnBnClickedButton5();
 
 	HANDLE hThread;
@@ -61,4 +64,5 @@ public:
 
 	void CloseThread();
 	bool run;
+	afx_msg void OnBnClickedReadDeviceInfo();
 };

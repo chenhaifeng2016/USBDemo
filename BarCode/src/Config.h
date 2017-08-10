@@ -9,6 +9,7 @@ public:
 	void ReadConfigFile();
 
 	int timeout;
+	int log;
 };
 
 extern Config gConfig;

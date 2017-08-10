@@ -62,4 +62,9 @@
       <Filter>libusb\lib</Filter>
     </Library>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="barcode.def">
+      <Filter>源文件</Filter>
+    </None>
+  </ItemGroup>
 </Project>
