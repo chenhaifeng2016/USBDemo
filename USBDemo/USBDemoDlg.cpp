@@ -294,8 +294,10 @@ void CUSBDemoDlg::OnBnClickedReadDeviceInfo()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	char * pIn = NULL;
-	char pOut[200] = { 0x00 };
+	char pOut[200] = { 0 };
 
 	BAR_GetDeviceInfo(pIn, pOut);
-	AfxMessageBox(pOut);
+
+	CString msg = pOut;
+	AfxMessageBox(msg);
 }

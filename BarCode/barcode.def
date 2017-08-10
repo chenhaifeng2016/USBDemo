@@ -3,6 +3,6 @@ EXPORTS
 BAR_Init
 BAR_Uninit
 BAR_ReadData
+BAR_GetDeviceInfo
 BAR_GetSerial
 BAR_GetStatus
-BAR_GetDeviceInfo

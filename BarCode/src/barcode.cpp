@@ -86,16 +86,17 @@ WORD WINAPI BAR_GetDeviceInfo(char *pIn, char *pOut)
 	// 新大陆 NLS-EM20
 
 	
-	char serialNo[50] = { 0 };
+	char serialNo[30];
+	memset(serialNo, 0x00, sizeof(serialNo));
 	
 	if (usb.ReadSerialNo(serialNo))
 	{
-		sprintf(pOut, "%s,%s,%s", serialNo, "新大陆", "NLS-EM20");
+		sprintf(pOut, "%s,%s,%s", serialNo, "新大陆", "EM20");
 		return 1;
 	}
 	else
 	{
-		sprintf(pOut, "%s,%s,%s", "000000000000", "新大陆", "NLS-EM20");
+		sprintf(pOut, "%s,%s,%s", "00000000", "新大陆", "EM20");
 		return 0;
 	}
 }

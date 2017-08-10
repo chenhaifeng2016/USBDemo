@@ -7,8 +7,12 @@
 #include "FileLog.h"
 #include "Config.h"
 
+#include <assert.h>
+
 //临界区
 CRITICAL_SECTION gCriticalSec;
+
+#define SERIAL_NO_LEN 8
 
 USBWrapper::USBWrapper()
 {
@@ -68,7 +72,7 @@ int USBWrapper::OpenDevice()
 	r = libusb_claim_interface(devh, 0);
 	if (r < 0)
 	{
-		libusb_close(devh);
+		//libusb_close(devh);
 
 		return r;
 	}
@@ -134,8 +138,7 @@ int USBWrapper::OpenDevice()
 		{
 			epOutput = endpoint;
 		}
-			
-	}
+	}//end for
 
 	if (epInput == NULL)
 	{
@@ -291,7 +294,7 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 		sprintf(msg, "count=%d\n", count++);
 		OutputDebugString(msg);
 
-		r = libusb_interrupt_transfer(devh, epInput->bEndpointAddress, (unsigned char*)&packet, sizeof(packet), &rlen, 0); //block
+		r = libusb_interrupt_transfer(devh, epInput->bEndpointAddress, (unsigned char*)&packet, sizeof(ST_HID_POS_IN_PACKECT), &rlen, 0); //block
 		if (r < 0)
 		{
 			gLog.error("ReadPacket libusb_interrupt_transfer");
@@ -336,13 +339,10 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 				//prefix2(0x02 0x00)    长度2字节(data + LRC)   type(0x34)   data   LRC
 				if (packet.data[0] == 0x02 && packet.data[1] == 0x00 && packet.data[4] == 0x34)
 				{
-					int len = packet.data[3] - 1; //去掉最后的LRC
-					char *data = new char[len + 1];
-					memset(data, 0x00, len + 1);
-					memcpy(data, packet.data + 5, len);
+					char data[9] = { 0 };
+					memcpy(data, packet.data + 9, SERIAL_NO_LEN);
 					serialNo = data;
-					delete[] data;
-
+					
 					return 0; // 固定返回0，留给前端处理
 				}
 			}
@@ -361,6 +361,7 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 bool USBWrapper::ReadSerialNo(char * pOut)
 {
 	//char cmd[] = {0x7E0x000x000x050x330x480x300x330x300xB2};
+	serialNo = "";
 	int rlen = 0;
 
 	ST_HID_POS_OUT_PACKECT packet;
@@ -368,7 +369,7 @@ bool USBWrapper::ReadSerialNo(char * pOut)
 
 	packet.packetId = 0x04;
 	packet.dataLength = 0x0a;
-
+	
 	packet.data[0] = 0x7E; // prefix
 	packet.data[1] = 0x00;
 
@@ -383,15 +384,23 @@ bool USBWrapper::ReadSerialNo(char * pOut)
 	packet.data[8] = 0x30;
 
 	packet.data[9] = 0xB2; //lrc
+	
+	
+	int rc = 0;
+	
 
-	int r = libusb_interrupt_transfer(devh, epOutput->bEndpointAddress, (unsigned char*)&packet, sizeof(packet), &rlen, 0); //block
-	if (r != 0)
+	rc = libusb_interrupt_transfer(devh, epOutput->bEndpointAddress, (unsigned char*)&packet, sizeof(packet), &rlen, 5000); //block
+	
+	if (rc != 0)
+	{
 		return false;
+	}
+		
 
 	// 等待返回结果，这里没有采用事件通知
 	while (true)
 	{
-		if (serialNo.length() < 12) // 最好判断长度
+		if (serialNo.length() != SERIAL_NO_LEN) // 最好判断长度
 			continue;
 
 		memcpy(pOut, serialNo.c_str(), serialNo.length());
