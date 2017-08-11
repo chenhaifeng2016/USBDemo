@@ -6,13 +6,15 @@
 #include "USBWrapper.h"
 #include "FileLog.h"
 #include "Config.h"
-
 #include <assert.h>
+
+#define SERIAL_NO_LEN 8
 
 //临界区
 CRITICAL_SECTION gCriticalSec;
 
-#define SERIAL_NO_LEN 8
+
+
 
 USBWrapper::USBWrapper()
 {
@@ -29,7 +31,6 @@ USBWrapper::USBWrapper()
 	return_code = "";
 
 	InitializeCriticalSection(&gCriticalSec);
-
 }
 
 
@@ -343,6 +344,8 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 					memcpy(data, packet.data + 9, SERIAL_NO_LEN);
 					serialNo = data;
 					
+					//queue.push(serialNo);
+
 					return 0; // 固定返回0，留给前端处理
 				}
 			}
@@ -397,7 +400,10 @@ bool USBWrapper::ReadSerialNo(char * pOut)
 	}
 		
 
-	// 等待返回结果，这里没有采用事件通知
+	// 等待返回结果，采用mutex和信号量
+	//serialNo = queue.pop();
+	
+	//等待返回结果
 	while (true)
 	{
 		if (serialNo.length() != SERIAL_NO_LEN) // 最好判断长度
@@ -407,6 +413,7 @@ bool USBWrapper::ReadSerialNo(char * pOut)
 		serialNo = "";
 		break;
 	}
+	
 
 	return true;
 }
@@ -422,7 +429,7 @@ bool USBWrapper::StartReadThread()
 		return false;
 
 	working = true;
-
+	
 	hThread = (HANDLE)_beginthread(&USBWrapper::ScanThread, 0, this);
 
 	return true;

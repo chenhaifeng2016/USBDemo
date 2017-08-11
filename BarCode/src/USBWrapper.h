@@ -1,9 +1,12 @@
 #ifndef USBWRAPPER_H
 #define USBWRAPPER_H
 
+#include <windows.h>
 #include "libusb.h"
 #include <string>
 #include <process.h>
+#include "../include/job_queue.h"
+
 
 #define OK   0
 #define ERR -1
@@ -83,7 +86,10 @@ private:
 	
 	std::string scanner_code;
 	std::string return_code;
+
 	std::string serialNo;
+	
+	job_queue<std::string> queue;
 };
 
 #endif
