@@ -30,9 +30,6 @@
     <ClInclude Include="src\USBWrapper.h">
       <Filter>源文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\barcode.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\include\libusb-1.0\libusb.h">
       <Filter>libusb\include</Filter>
     </ClInclude>
@@ -44,6 +41,9 @@
     </ClInclude>
     <ClInclude Include="include\job_queue.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\barcode.h">
+      <Filter>源文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

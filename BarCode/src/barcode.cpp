@@ -72,10 +72,18 @@ WORD WINAPI BAR_GetSerial(char * cSerialNo)
 
 WORD WINAPI BAR_GetStatus(char *pIn, char* pOut)
 {
-	char * status = "00000000";
-	memcpy(pOut, status, 7);
-
-	return 0;
+	if (usb.GetStatus())
+	{
+		char * status = "11111111";
+		memcpy(pOut, status, 8);
+		return 1;
+	}
+	else
+	{
+		char * status = "00000000";
+		memcpy(pOut, status, 8);
+		return 0;
+	}
 }
 
 WORD WINAPI BAR_GetDeviceInfo(char *pIn, char *pOut)

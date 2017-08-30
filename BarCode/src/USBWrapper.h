@@ -5,7 +5,7 @@
 #include "libusb.h"
 #include <string>
 #include <process.h>
-#include "../include/job_queue.h"
+//#include "../include/job_queue.h"
 
 
 #define OK   0
@@ -61,6 +61,8 @@ public:
 
 	bool StartReadThread();//建立读线程
 	void StopReadThread();//关闭读线程
+
+	int GetStatus() { return status; };
 	
 
 private:
@@ -89,7 +91,8 @@ private:
 
 	std::string serialNo;
 	
-	job_queue<std::string> queue;
+	//job_queue<std::string> queue;
+	int status;
 };
 
 #endif

@@ -41,6 +41,8 @@ USBWrapper::~USBWrapper()
 
 int USBWrapper::OpenDevice()
 {
+	status = 0;
+
 	if (ctx != NULL)
 		return ERROR;
 
@@ -148,11 +150,14 @@ int USBWrapper::OpenDevice()
 		return ERROR;
 	}
 
+	status = 1;
 	return OK;
 }
 
 int USBWrapper::CloseDevice()
 {
+	status = 0;
+
 	if (devh != NULL)
 	{
 		libusb_release_interface(devh, 0);
@@ -486,9 +491,11 @@ void USBWrapper::ScanThread(void * arg)
 		if (rlen < 0)
 		{
 			gLog.error("扫描线程扫描失败退出线程 if (rlen < 0)");
+			pThis->status = 0;
 			return;
 		}
 
+		pThis->status = 1;
 		if (rlen == 0)
 		{
 			Sleep(1);

@@ -7,7 +7,11 @@
 #include "USBDemoDlg.h"
 #include "afxdialogex.h"
 
-//#include "barcode.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <iomanip>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -39,6 +43,8 @@ BEGIN_MESSAGE_MAP(CUSBDemoDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON5, &CUSBDemoDlg::OnBnClickedButton5)
 	ON_BN_CLICKED(IDC_BUTTON2, &CUSBDemoDlg::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_READ_DEVICE_INFO, &CUSBDemoDlg::OnBnClickedReadDeviceInfo)
+	ON_BN_CLICKED(IDC_LOAD_DLL, &CUSBDemoDlg::OnBnClickedLoadDll)
+	ON_BN_CLICKED(IDC_GET_STATUS, &CUSBDemoDlg::OnBnClickedGetStatus)
 END_MESSAGE_MAP()
 
 
@@ -54,8 +60,7 @@ BOOL CUSBDemoDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	if (!LoadDLL())
-		return FALSE;
+	
 
 	hThread = INVALID_HANDLE_VALUE;
 
@@ -299,5 +304,25 @@ void CUSBDemoDlg::OnBnClickedReadDeviceInfo()
 	BAR_GetDeviceInfo(pIn, pOut);
 
 	CString msg = pOut;
+	AfxMessageBox(msg);
+}
+
+
+void CUSBDemoDlg::OnBnClickedLoadDll()
+{	
+	LoadDLL();
+}
+
+
+void CUSBDemoDlg::OnBnClickedGetStatus()
+{
+	
+	char * pIn = NULL;
+	char pOut[200] = { 0 };
+
+	int rc = BAR_GetStatus(pIn, pOut);
+
+	CString msg;
+	msg.Format("返回码%d, 输出参数%s", rc, pOut);
 	AfxMessageBox(msg);
 }

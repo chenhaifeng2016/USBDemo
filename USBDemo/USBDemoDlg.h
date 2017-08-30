@@ -65,4 +65,6 @@ public:
 	void CloseThread();
 	bool run;
 	afx_msg void OnBnClickedReadDeviceInfo();
+	afx_msg void OnBnClickedLoadDll();
+	afx_msg void OnBnClickedGetStatus();
 };
