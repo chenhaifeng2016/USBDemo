@@ -6,7 +6,7 @@
 #include "USBWrapper.h"
 #include "FileLog.h"
 #include "Config.h"
-#include <assert.h>
+
 
 #define SERIAL_NO_LEN 8
 
@@ -29,6 +29,7 @@ USBWrapper::USBWrapper()
 	hThread = INVALID_HANDLE_VALUE;
 	//mCallbackFunc = NULL;
 	return_code = "";
+	status = 0;
 
 	InitializeCriticalSection(&gCriticalSec);
 }
@@ -44,18 +45,21 @@ int USBWrapper::OpenDevice()
 	status = 0;
 
 	if (ctx != NULL)
-		return ERROR;
+		return ERR;
 
 	r = libusb_init(&ctx);
 	if (r < 0)
 	{
-		return r;
+		return ERR;
 	}
 	
 	devh = libusb_open_device_with_vid_pid(ctx, 0x1EAB, 0x1310);
 	if (devh == NULL)
 	{
-		return ERROR;
+		libusb_exit(ctx);
+		ctx = NULL;
+
+		return ERR;
 	}
 
 	if (libusb_kernel_driver_active(devh, 0) == 1)
@@ -75,15 +79,15 @@ int USBWrapper::OpenDevice()
 	r = libusb_claim_interface(devh, 0);
 	if (r < 0)
 	{
-		//libusb_close(devh);
+		CloseDevice();
 
-		return r;
+		return ERR;
 	}
 
 	dev = libusb_get_device(devh);
 	if (dev == NULL)
 	{
-		return ERROR;
+		return ERR;
 	}
 
 	struct libusb_device_descriptor desc;
@@ -93,7 +97,7 @@ int USBWrapper::OpenDevice()
 		libusb_release_interface(devh, 0);
 		libusb_close(devh);
 
-		return r;
+		return ERR;
 	}
 
 	r = libusb_get_active_config_descriptor(dev, &config);
@@ -101,7 +105,7 @@ int USBWrapper::OpenDevice()
 	{
 		libusb_release_interface(devh, 0);
 		libusb_close(devh);
-		return r;
+		return ERR;
 	}
 
 	libusb_interface_descriptor * interface = (libusb_interface_descriptor*) config->interface->altsetting;
@@ -147,7 +151,7 @@ int USBWrapper::OpenDevice()
 	{
 		r = libusb_release_interface(devh, 0);
 		libusb_close(devh);
-		return ERROR;
+		return ERR;
 	}
 
 	status = 1;
@@ -204,15 +208,16 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 	}
 	
 	
-	EnterCriticalSection(&gCriticalSec);
+	
 
 	if (timeout == 0)
 	{
+		//EnterCriticalSection(&gCriticalSec);
 		//一个是不知道什么时间放票，要传0,每隔20毫秒调用一次，保证能及时获得二维码
 
 		if (scanner_code.length() == 0)
 		{
-			LeaveCriticalSection(&gCriticalSec);
+			//LeaveCriticalSection(&gCriticalSec);
 			return ERR;
 		}
 		else
@@ -224,7 +229,7 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 
 			gLog.info("通过轮询方式获取" + return_code);
 
-			LeaveCriticalSection(&gCriticalSec);
+			//LeaveCriticalSection(&gCriticalSec);
 			return OK;
 		}
 	}
@@ -264,16 +269,16 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 		else
 		{
 			//有二维码，判断和上次返回的是不是同一张票的二维码
-				return_code = scanner_code;
+			return_code = scanner_code;
 
-				memcpy(pData, return_code.c_str(), return_code.length());
-				*pOutLen = return_code.length();
+			memcpy(pData, return_code.c_str(), return_code.length());
+			*pOutLen = return_code.length();
 
-				scanner_code = "";
+			scanner_code = "";
 				
-				gLog.info("通过限时方式获取" + return_code);
+			gLog.info("通过限时方式获取" + return_code);
 
-				return OK;
+			return OK;
 		}			
 	} // end while
 	
@@ -290,6 +295,9 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 
 	int count = 0;
 	char msg[50] = { 0 };
+
+	if (devh == NULL)
+		return -1;
 
 	while (true)
 	{
@@ -366,69 +374,10 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 	return ilen; // 返回总长度
 }
 
-bool USBWrapper::ReadSerialNo(char * pOut)
-{
-	//char cmd[] = {0x7E0x000x000x050x330x480x300x330x300xB2};
-	serialNo = "";
-	int rlen = 0;
-
-	ST_HID_POS_OUT_PACKECT packet;
-	memset(&packet, 0, sizeof(ST_HID_POS_OUT_PACKECT));
-
-	packet.packetId = 0x04;
-	packet.dataLength = 0x0a;
-	
-	packet.data[0] = 0x7E; // prefix
-	packet.data[1] = 0x00;
-
-	packet.data[2] = 0x00; // len
-	packet.data[3] = 0x05;
-
-	packet.data[4] = 0x33; //type
-
-	packet.data[5] = 0x48; // data
-	packet.data[6] = 0x30;
-	packet.data[7] = 0x33;
-	packet.data[8] = 0x30;
-
-	packet.data[9] = 0xB2; //lrc
-	
-	
-	int rc = 0;
-	
-
-	rc = libusb_interrupt_transfer(devh, epOutput->bEndpointAddress, (unsigned char*)&packet, sizeof(packet), &rlen, 5000); //block
-	
-	if (rc != 0)
-	{
-		return false;
-	}
-		
-
-	// 等待返回结果，采用mutex和信号量
-	//serialNo = queue.pop();
-	
-	//等待返回结果
-	while (true)
-	{
-		if (serialNo.length() != SERIAL_NO_LEN) // 最好判断长度
-			continue;
-
-		memcpy(pOut, serialNo.c_str(), serialNo.length());
-		serialNo = "";
-		break;
-	}
-	
-
-	return true;
-}
 
 bool USBWrapper::StartReadThread()
 {
-	if (dev == NULL)
-	{
-		return false;
-	}
+	
 
 	if (working)
 		return false;
@@ -436,6 +385,11 @@ bool USBWrapper::StartReadThread()
 	working = true;
 	
 	hThread = (HANDLE)_beginthread(&USBWrapper::ScanThread, 0, this);
+	if (hThread == INVALID_HANDLE_VALUE)
+	{
+		working = false;
+		return false;
+	}
 
 	return true;
 }
@@ -479,12 +433,30 @@ void USBWrapper::ScanThread(void * arg)
 	int timeInterval = endTime - beginTime;
 	int timeout = gConfig.timeout;//ms
 
+	pThis->status = 0;
 
 		
 	while (pThis->working)
 	{
-		memset(szRxBuf, 0x00, sizeof(szRxBuf));
+		if (pThis->status == 0)
+		{
+			TRACE("======================>设备状态：失败<======================\n");
 
+			if (pThis->OpenDevice() == ERR)
+			{
+				TRACE("======================>打开设备失败<======================\n");
+				Sleep(100);
+				continue;
+			}
+
+			TRACE("======================>打开设备成功<======================\n");
+		}
+		else
+		{
+			TRACE("======================>设备状态：正常<======================\n");
+		}
+			
+		memset(szRxBuf, 0x00, sizeof(szRxBuf));
 		rlen = pThis->ReadPacket((unsigned char *)szRxBuf);
 		//libusb_interrupt_transfer 会造成阻赛，无法停止线程
 
@@ -492,7 +464,12 @@ void USBWrapper::ScanThread(void * arg)
 		{
 			gLog.error("扫描线程扫描失败退出线程 if (rlen < 0)");
 			pThis->status = 0;
-			return;
+
+			pThis->CloseDevice();
+
+			TRACE("======================>设备状态：异常关闭<======================\n");
+			
+			continue;
 		}
 
 		pThis->status = 1;
@@ -554,4 +531,65 @@ void USBWrapper::ScanThread(void * arg)
 	}
 	
 	//TRACE(".................读线程退出.................\n");
+}
+
+
+bool USBWrapper::ReadSerialNo(char * pOut)
+{
+	//char cmd[] = {0x7E0x000x000x050x330x480x300x330x300xB2};
+	serialNo = "";
+	int rlen = 0;
+
+	if (devh == NULL)
+		return false;
+
+	ST_HID_POS_OUT_PACKECT packet;
+	memset(&packet, 0, sizeof(ST_HID_POS_OUT_PACKECT));
+
+	packet.packetId = 0x04;
+	packet.dataLength = 0x0a;
+
+	packet.data[0] = 0x7E; // prefix
+	packet.data[1] = 0x00;
+
+	packet.data[2] = 0x00; // len
+	packet.data[3] = 0x05;
+
+	packet.data[4] = 0x33; //type
+
+	packet.data[5] = 0x48; // data
+	packet.data[6] = 0x30;
+	packet.data[7] = 0x33;
+	packet.data[8] = 0x30;
+
+	packet.data[9] = 0xB2; //lrc
+
+
+	int rc = 0;
+
+
+	rc = libusb_interrupt_transfer(devh, epOutput->bEndpointAddress, (unsigned char*)&packet, sizeof(packet), &rlen, 5000); //block
+
+	if (rc != 0)
+	{
+		return false;
+	}
+
+
+	// 等待返回结果，采用mutex和信号量
+	//serialNo = queue.pop();
+
+	//等待返回结果
+	while (true)
+	{
+		if (serialNo.length() != SERIAL_NO_LEN) // 最好判断长度
+			continue;
+
+		memcpy(pOut, serialNo.c_str(), serialNo.length());
+		serialNo = "";
+		break;
+	}
+
+
+	return true;
 }

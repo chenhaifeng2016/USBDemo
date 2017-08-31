@@ -172,12 +172,12 @@ void CUSBDemoDlg::OnBnClickedButton1()
 
 	if (BAR_Init(pIn, pOut) == 0)
 	{
-		AfxMessageBox(_T("打开设备成功"));
+		AfxMessageBox(_T("初始化成功"));
 		
 	}
 	else
 	{
-		CString msg = _T("打开设备失败");
+		CString msg = _T("初始化失败");
 		AfxMessageBox(msg);
 	}	
 }
@@ -191,11 +191,11 @@ void CUSBDemoDlg::OnBnClickedButton3()
 
 	if (BAR_Uninit(pIn, pOut) == 0)
 	{
-		AfxMessageBox(_T("关闭设备成功"));
+		AfxMessageBox(_T("释放资源成功"));
 	}
 	else
 	{
-		AfxMessageBox(_T("关闭设备失败"));
+		AfxMessageBox(_T("释放资源失败"));
 	}
 }
 
@@ -210,7 +210,7 @@ void CUSBDemoDlg::OnBnClickedButton4()
 	if (BAR_ReadData(pIn, pOut, &outlen) == 0)
 	{
 		CString msg;
-		msg.Format("序号%d 读二维码成功 %s 长度 %d\n", count++, pOut, outlen);
+		msg.Format("模式1：序号%d 读二维码成功 %s 长度 %d\n", count++, pOut, outlen);
 		TRACE(msg);
 		AfxMessageBox(msg);
 		
@@ -219,7 +219,7 @@ void CUSBDemoDlg::OnBnClickedButton4()
 	{
 		
 		CString msg;
-		msg.Format("序号%d 读二维码失败\n", count++);
+		msg.Format("模式1：序号%d 读二维码失败\n", count++);
 
 		//TRACE(msg);
 		AfxMessageBox(msg);
@@ -264,9 +264,9 @@ DWORD WINAPI CUSBDemoDlg::MyThreadFunction(LPVOID lpParam)
 		else
 		{
 			CString msg;
-			msg.Format("模式2: 读二维码失败\n");
+			msg.Format("模式2: 读二维码失败.............................\n");
 
-			//TRACE(msg);
+			TRACE(msg);
 			
 		}
 
@@ -294,29 +294,15 @@ void CUSBDemoDlg::CloseThread()
 	TRACE("结束线程\n");
 }
 
-
-void CUSBDemoDlg::OnBnClickedReadDeviceInfo()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	char * pIn = NULL;
-	char pOut[200] = { 0 };
-
-	BAR_GetDeviceInfo(pIn, pOut);
-
-	CString msg = pOut;
-	AfxMessageBox(msg);
-}
-
-
 void CUSBDemoDlg::OnBnClickedLoadDll()
-{	
+{
 	LoadDLL();
 }
 
 
-void CUSBDemoDlg::OnBnClickedGetStatus()
+void CUSBDemoDlg::OnBnClickedReadDeviceInfo()
 {
-	
+
 	char * pIn = NULL;
 	char pOut[200] = { 0 };
 
@@ -324,5 +310,19 @@ void CUSBDemoDlg::OnBnClickedGetStatus()
 
 	CString msg;
 	msg.Format("返回码%d, 输出参数%s", rc, pOut);
+	AfxMessageBox(msg);
+	
+}
+
+
+
+void CUSBDemoDlg::OnBnClickedGetStatus()
+{
+	char * pIn = NULL;
+	char pOut[200] = { 0 };
+
+	BAR_GetDeviceInfo(pIn, pOut);
+
+	CString msg = pOut;
 	AfxMessageBox(msg);
 }

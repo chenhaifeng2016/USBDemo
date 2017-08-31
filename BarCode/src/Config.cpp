@@ -1,3 +1,6 @@
+#include <afx.h>
+//#include <windows.h>
+
 #include "Config.h"
 #include <fstream>
 #include <iostream>
@@ -5,7 +8,7 @@
 #include <string>
 #include "FileLog.h"
 
-#include <Windows.h>
+
 
 Config gConfig;
 

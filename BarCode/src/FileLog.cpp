@@ -1,10 +1,13 @@
+#include <afx.h>
+//#include <windows.h>
+
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
 #include <iomanip>
 
-#include <windows.h>
+
 
 #include "FileLog.h"
 #include "Config.h"

@@ -1,7 +1,9 @@
 #ifndef USBWRAPPER_H
 #define USBWRAPPER_H
 
-#include <windows.h>
+//#include <windows.h>
+#include <afx.h>
+
 #include "libusb.h"
 #include <string>
 #include <process.h>
@@ -58,11 +60,12 @@ public:
 	int CloseDevice();//关闭设备
 	int ReadData(char *pIn, char *pOut, int *pOutLen);
 	bool ReadSerialNo(char * pOut);
+	int GetStatus() { return status; };
 
 	bool StartReadThread();//建立读线程
 	void StopReadThread();//关闭读线程
 
-	int GetStatus() { return status; };
+	
 	
 
 private:
@@ -84,9 +87,8 @@ private:
 	int r;
 	bool working;
 	HANDLE hThread;
-	//CallbackFunc mCallbackFunc;
-	
 	std::string scanner_code;
+
 	std::string return_code;
 
 	std::string serialNo;

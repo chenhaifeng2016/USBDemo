@@ -1,7 +1,7 @@
 #ifndef BARCODE_H
 #define BARCODE_H
 
-#include <windows.h>
+#include <afx.h>
 
 #ifdef __cplusplus
 extern "C" {
