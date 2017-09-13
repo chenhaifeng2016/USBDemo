@@ -79,6 +79,7 @@ int USBWrapper::OpenDevice()
 	r = libusb_claim_interface(devh, 0);
 	if (r < 0)
 	{
+		status = 0;
 		CloseDevice();
 
 		return ERR;
@@ -160,8 +161,11 @@ int USBWrapper::OpenDevice()
 
 int USBWrapper::CloseDevice()
 {
-	status = 0;
+	// 关闭一个处于不正常状态的设备，直接返回失败
+	//if (status == 0)
+	//	return ERR;
 
+	// 关闭处理正常状态的设备
 	if (devh != NULL)
 	{
 		libusb_release_interface(devh, 0);
@@ -176,6 +180,8 @@ int USBWrapper::CloseDevice()
 		libusb_exit(ctx);
 		ctx = NULL;
 	}
+	
+	status = 0;
 
 	return OK;
 }
@@ -375,12 +381,10 @@ int USBWrapper::ReadPacket(unsigned char * pdata)
 }
 
 
-bool USBWrapper::StartReadThread()
+void USBWrapper::StartReadThread()
 {
-	
-
-	if (working)
-		return false;
+	if (hThread != INVALID_HANDLE_VALUE)
+		return;
 
 	working = true;
 	
@@ -388,10 +392,8 @@ bool USBWrapper::StartReadThread()
 	if (hThread == INVALID_HANDLE_VALUE)
 	{
 		working = false;
-		return false;
+		
 	}
-
-	return true;
 }
 
 void USBWrapper::StopReadThread()
@@ -433,7 +435,7 @@ void USBWrapper::ScanThread(void * arg)
 	int timeInterval = endTime - beginTime;
 	int timeout = gConfig.timeout;//ms
 
-	pThis->status = 0;
+//	pThis->status = 0;
 
 		
 	while (pThis->working)

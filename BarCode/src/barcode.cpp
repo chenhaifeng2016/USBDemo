@@ -7,40 +7,47 @@ USBWrapper usb;
 
 WORD WINAPI BAR_Init(char *pIn, char* pOut)
 {
-	int r = 0;
-	
 	gConfig.ReadConfigFile();
 
-	/*
-	r = usb.OpenDevice();
+	if (usb.OpenDevice() != 0) {
+		char * status = "11111111";
+		memcpy(pOut, status, 8);
+		return 1;
+	}
 
-	if (r <= 0)
-		r = 1; // 失败
-	else
-		r = 0; // 成功
-		*/
+	usb.StartReadThread();
 
-	if (!usb.StartReadThread())
-		r = 1;
-
-	return r;
+	char * status = "00000000";
+	memcpy(pOut, status, 8);
+	return 0;
 }
 
 WORD WINAPI BAR_Uninit(char* pIn, char* pOut)
 {
 	int r = 0;
 
-	//强行杀死线程
+	// 停止扫扫描线程
 	usb.StopReadThread();
 
 	r = usb.CloseDevice();
 
-	if (r < 0)
-		r = 1; // 失败
-	else
-		r = 0; //成功
+	if (r < 0) //-1
+	{
+		char * status = "11111111";
+		memcpy(pOut, status, 8);
 
-	return r;
+		r = 1; // 失败
+	}
+	else
+	{
+		char * status = "00000000";
+		memcpy(pOut, status, 8);
+
+		r = 0; //成功
+	}
+		
+
+	return r;  //return !r
 }
 
 WORD WINAPI BAR_ReadData(char *pIn, char *pOut, int *pOutLen)
@@ -53,6 +60,10 @@ WORD WINAPI BAR_ReadData(char *pIn, char *pOut, int *pOutLen)
 
 	if (r < 0)
 	{ 
+		char * status = "11111111";
+		*pOutLen = 8;
+		memcpy(pOut, status, *pOutLen);
+
 		r = 1;
 	}
 	else
@@ -90,12 +101,12 @@ WORD WINAPI BAR_GetSerial(char * pOut)
 	if (usb.ReadSerialNo(serialNo))
 	{
 		sprintf(pOut, "%s,%s,%s", serialNo, "新大陆", "EM20");
-		return 1;
+		return 0;
 	}
 	else
 	{
-		sprintf(pOut, "%s,%s,%s", "00000000", "新大陆", "EM20");
-		return 0;
+		sprintf(pOut, "%s,%s,%s", "11111111", "新大陆", "EM20");
+		return 1;
 	}
 }
 
@@ -113,11 +124,11 @@ WORD WINAPI BAR_GetDeviceInfo(char *pIn, char *pOut)
 	if (usb.ReadSerialNo(serialNo))
 	{
 		sprintf(pOut, "%s,%s,%s", serialNo, "新大陆", "EM20");
-		return 1;
+		return 0;
 	}
 	else
 	{
-		sprintf(pOut, "%s,%s,%s", "00000000", "新大陆", "EM20");
-		return 0;
+		sprintf(pOut, "%s,%s,%s", "11111111", "新大陆", "EM20");
+		return 1;
 	}
 }

@@ -62,7 +62,7 @@ public:
 	bool ReadSerialNo(char * pOut);
 	int GetStatus() { return status; };
 
-	bool StartReadThread();//建立读线程
+	void StartReadThread();//建立读线程
 	void StopReadThread();//关闭读线程
 
 	
