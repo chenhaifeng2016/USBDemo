@@ -194,6 +194,74 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 	{
 		return ERR;
 	}
+
+	if (pIn == NULL || pData == NULL)
+	{
+		return ERR;
+	}
+
+
+	int timeout = 0;
+	try
+	{
+		timeout = atoi(pIn);
+	}
+	catch (...)
+	{
+		return ERR;
+	}
+
+
+	//std::chrono::high_resolution_clock::time_point beginTime = std::chrono::high_resolution_clock::now();
+	clock_t beginTime;
+	beginTime = clock();
+
+	while (true)
+	{
+		//std::chrono::high_resolution_clock::time_point endTime = std::chrono::high_resolution_clock::now();
+		//std::chrono::milliseconds timeInterval = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - beginTime);
+
+		if (scanner_code.length() != 0)
+		{
+			//有二维码直接返回
+			return_code = scanner_code;
+
+			memcpy(pData, return_code.c_str(), return_code.length());
+			*pOutLen = return_code.length();
+
+			scanner_code = "";
+
+			gLog.info("通过限时方式获取" + return_code);
+
+			return OK;
+		}
+		else
+		{
+			clock_t endTime;
+			endTime = clock();
+
+			int timeInterval = endTime - beginTime;
+
+			if (timeInterval >= timeout)
+			{
+				return ERR;
+			}
+			else
+			{
+				// 没有二维码，等待超时
+				Sleep(1);
+				continue;
+			}
+		}
+	} // end while
+
+	return ERR;
+
+	/*
+	if (devh == NULL)
+	{
+		return ERR;
+	}
 		
 
 
@@ -289,6 +357,7 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 	} // end while
 	
 	return ERR;
+	*/
 }
 
 

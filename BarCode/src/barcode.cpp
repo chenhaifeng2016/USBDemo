@@ -105,7 +105,7 @@ WORD WINAPI BAR_GetSerial(char * pOut)
 	}
 	else
 	{
-		sprintf(pOut, "%s,%s,%s", "11111111", "新大陆", "EM20");
+		//sprintf(pOut, "%s,%s,%s", "11111111", "", "");
 		return 1;
 	}
 }
@@ -128,7 +128,7 @@ WORD WINAPI BAR_GetDeviceInfo(char *pIn, char *pOut)
 	}
 	else
 	{
-		sprintf(pOut, "%s,%s,%s", "11111111", "新大陆", "EM20");
+		//sprintf(pOut, "%s,%s,%s", "11111111", "", "");
 		return 1;
 	}
 }
