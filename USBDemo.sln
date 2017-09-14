@@ -1,14 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "USBDemo", "USBDemo\USBDemo.vcxproj", "{0AEF9161-31B9-4B46-B23A-CC0D329F3521}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F228608A-EFF0-4D5C-8D4A-9AAE2399913B} = {F228608A-EFF0-4D5C-8D4A-9AAE2399913B}
+		{38667EE0-403D-481F-A6AB-382BE95EB0DE} = {38667EE0-403D-481F-A6AB-382BE95EB0DE}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BarCode", "BarCode\BarCode.vcxproj", "{F228608A-EFF0-4D5C-8D4A-9AAE2399913B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PSEMRSIV_BAR", "PSEMRSIV_BAR\PSEMRSIV_BAR.vcxproj", "{38667EE0-403D-481F-A6AB-382BE95EB0DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +37,14 @@ Global
 		{F228608A-EFF0-4D5C-8D4A-9AAE2399913B}.Release|x64.Build.0 = Release|x64
 		{F228608A-EFF0-4D5C-8D4A-9AAE2399913B}.Release|x86.ActiveCfg = Release|Win32
 		{F228608A-EFF0-4D5C-8D4A-9AAE2399913B}.Release|x86.Build.0 = Release|Win32
+		{38667EE0-403D-481F-A6AB-382BE95EB0DE}.Debug|x64.ActiveCfg = Debug|x64
+		{38667EE0-403D-481F-A6AB-382BE95EB0DE}.Debug|x64.Build.0 = Debug|x64
+		{38667EE0-403D-481F-A6AB-382BE95EB0DE}.Debug|x86.ActiveCfg = Debug|Win32
+		{38667EE0-403D-481F-A6AB-382BE95EB0DE}.Debug|x86.Build.0 = Debug|Win32
+		{38667EE0-403D-481F-A6AB-382BE95EB0DE}.Release|x64.ActiveCfg = Release|x64
+		{38667EE0-403D-481F-A6AB-382BE95EB0DE}.Release|x64.Build.0 = Release|x64
+		{38667EE0-403D-481F-A6AB-382BE95EB0DE}.Release|x86.ActiveCfg = Release|Win32
+		{38667EE0-403D-481F-A6AB-382BE95EB0DE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

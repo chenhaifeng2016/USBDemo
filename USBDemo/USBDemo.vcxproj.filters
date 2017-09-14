@@ -18,6 +18,15 @@
     <Filter Include="BarCode\include">
       <UniqueIdentifier>{01a41568-aa38-4597-a3a8-bf5eec5d224d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="PSEMRSIV_BAR">
+      <UniqueIdentifier>{7e95b351-dc42-4a81-978f-9a3eca98855b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PSEMRSIV_BAR\include">
+      <UniqueIdentifier>{5ab50c74-1253-4526-93a7-3a74e3bd22a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PSEMRSIV_BAR\lib">
+      <UniqueIdentifier>{df506f86-0b42-49e0-af28-f22b6d96bb46}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="USBDemoDlg.h">
