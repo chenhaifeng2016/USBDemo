@@ -1,8 +1,6 @@
-#include "stdafx.h"
-
 #ifdef _DEBUG
-#pragma comment(lib, "BarCodeD.lib")
+	#pragma comment(lib, "PSEMRSIV_BARD.lib")
 #else
-#pragma comment(lib, "BarCode.lib")
+	#pragma comment(lib, "PSEMRSIV_BAR.lib")
 #endif
 

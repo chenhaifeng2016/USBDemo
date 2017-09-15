@@ -13,20 +13,23 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="libusb">
-      <UniqueIdentifier>{38ea3e48-3cde-45a4-b553-9cb62f054d27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libusb\include">
-      <UniqueIdentifier>{c6f470f6-5bfc-4531-8da8-7ec0838fa4cf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="libusb\lib">
-      <UniqueIdentifier>{cc0f8ed4-edad-446c-b0e9-7d5c500df75f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="文档">
       <UniqueIdentifier>{b9dbb68f-8f93-405e-8f77-16e637cb28b6}</UniqueIdentifier>
     </Filter>
     <Filter Include="模块定义文件">
       <UniqueIdentifier>{698699fc-4e8a-4b04-b119-fa506f41cb44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="第三方">
+      <UniqueIdentifier>{635d4152-98f4-4fb1-b03d-7d8cc3eb57d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="第三方\libusb">
+      <UniqueIdentifier>{38ea3e48-3cde-45a4-b553-9cb62f054d27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="第三方\libusb\include">
+      <UniqueIdentifier>{c6f470f6-5bfc-4531-8da8-7ec0838fa4cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="第三方\libusb\lib">
+      <UniqueIdentifier>{cc0f8ed4-edad-446c-b0e9-7d5c500df75f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -34,7 +37,7 @@
       <Filter>源文件</Filter>
     </ClInclude>
     <ClInclude Include="..\..\include\libusb-1.0\libusb.h">
-      <Filter>libusb\include</Filter>
+      <Filter>第三方\libusb\include</Filter>
     </ClInclude>
     <ClInclude Include="src\FileLog.h">
       <Filter>源文件</Filter>
@@ -65,7 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\MS32\dll\libusb-1.0.lib">
-      <Filter>libusb\lib</Filter>
+      <Filter>第三方\libusb\lib</Filter>
     </Library>
   </ItemGroup>
   <ItemGroup>

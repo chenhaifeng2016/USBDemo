@@ -336,8 +336,21 @@ void CUSBDemoDlg::OnBnClickedButton6()
 	ModuleInfo modInfo;
 	memset(modInfo, 0x00, sizeof(modInfo));
 
-	BAR_GetModuleInfo(&modInfo);
+	if (BAR_GetModuleInfo(&modInfo) != 1)	{
+		AfxMessageBox("Ê§°Ü");
+		return;
+	}
 
-	TRACE("id=%s\n", modInfo[0].ID);
-	TRACE("id=%s\n", modInfo[1].ID);
+	CString msg;
+	for (int i = 0; i < 2; i++) {
+		if (std::string(modInfo[i].ID).empty())
+			break;
+
+		CString line;
+		line.Format("id:%s, model:%s, brand:%s, version:%s, buildtime:%s \r\n", modInfo[i].ID, modInfo[i].Model, modInfo[i].Brand, modInfo[i].Version, modInfo[i].VerBuildTime);
+
+		msg += line;
+	}
+	AfxMessageBox(msg);
+	
 }

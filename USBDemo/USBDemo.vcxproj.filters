@@ -61,7 +61,7 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="importlib.cpp">
+    <ClCompile Include="import_lib.cpp">
       <Filter>第三方</Filter>
     </ClCompile>
   </ItemGroup>

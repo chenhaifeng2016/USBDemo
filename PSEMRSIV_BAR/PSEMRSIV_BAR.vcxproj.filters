@@ -19,14 +19,17 @@
     <Filter Include="模块定义文件">
       <UniqueIdentifier>{10254c48-1a47-45a2-b9e4-360a3e8c0bf2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libusb">
-      <UniqueIdentifier>{77f47e41-bcdf-4829-9303-99dbf778a36d}</UniqueIdentifier>
+    <Filter Include="第三方">
+      <UniqueIdentifier>{7adbc886-86a3-4944-a60c-8ebfce9c21b8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libusb\include">
-      <UniqueIdentifier>{a209084b-14dc-409d-9708-26f87ef910a1}</UniqueIdentifier>
+    <Filter Include="第三方\BarCode">
+      <UniqueIdentifier>{04002eca-2900-4ded-86e6-d3f308e8b2af}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libusb\lib">
-      <UniqueIdentifier>{fb6af2e8-6372-4e64-8ac8-5c42872ffa9c}</UniqueIdentifier>
+    <Filter Include="第三方\BarCode\include">
+      <UniqueIdentifier>{4639ce13-7497-46a9-ae33-a684f0e14fa0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="第三方\BarCode\lib">
+      <UniqueIdentifier>{c5a57e76-002f-4d37-9b10-102c3e022422}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -41,9 +44,15 @@
     <ClInclude Include="include\psemrsiv_bar.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\BarCode\include\barcode.h">
+      <Filter>第三方\BarCode\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\psemrsiv_bar.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\import_lib.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
