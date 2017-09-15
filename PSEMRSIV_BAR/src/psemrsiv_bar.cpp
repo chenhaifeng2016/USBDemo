@@ -46,7 +46,7 @@ int WINAPI BAR_GetModuleInfo(ModuleInfo * p_ModuleInfo) {
 	
 	memcpy(p_ModuleInfo[0]->Brand, result[1].c_str(), result[1].length());
 	//memcpy((*p_ModuleInfo + 1)->Brand, result[1].c_str(), result[1].length());
-
+	
 	char * version = "1.0";
 	memcpy(p_ModuleInfo[0]->Version, version, strlen(version));
 	//memcpy((*p_ModuleInfo + 1)->Version, version, strlen(version));
