@@ -25,6 +25,9 @@
     <Filter Include="文档">
       <UniqueIdentifier>{b9dbb68f-8f93-405e-8f77-16e637cb28b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="模块定义文件">
+      <UniqueIdentifier>{698699fc-4e8a-4b04-b119-fa506f41cb44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\USBWrapper.h">
@@ -67,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="barcode.def">
-      <Filter>源文件</Filter>
+      <Filter>模块定义文件</Filter>
     </None>
   </ItemGroup>
 </Project>

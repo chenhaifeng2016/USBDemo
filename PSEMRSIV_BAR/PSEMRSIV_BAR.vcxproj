@@ -96,6 +96,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>psemrsiv_bar.def</ModuleDefinitionFile>
+      <ImportLibrary>./lib/$(TargetName)D.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,7 +119,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Disabled</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;PSEMRSIV_BAR_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -130,6 +131,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>psemrsiv_bar.def</ModuleDefinitionFile>
+      <ImportLibrary>./lib/$(TargetName).lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -152,14 +154,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="doc\实名制闸机状态监测--供应商接口说明.docx" />
     <None Include="psemrsiv_bar.def" />
-    <None Include="实名制闸机状态监测--供应商接口说明.docx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="psemrsiv_bar.h" />
+    <ClInclude Include="include\psemrsiv_bar.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="psemrsiv_bar.cpp" />
+    <ClCompile Include="src\psemrsiv_bar.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

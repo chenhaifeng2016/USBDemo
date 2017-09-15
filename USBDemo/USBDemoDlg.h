@@ -67,4 +67,5 @@ public:
 	afx_msg void OnBnClickedReadDeviceInfo();
 	afx_msg void OnBnClickedLoadDll();
 	afx_msg void OnBnClickedGetStatus();
+	afx_msg void OnBnClickedButton6();
 };

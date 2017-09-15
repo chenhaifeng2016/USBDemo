@@ -16,6 +16,8 @@ extern "C" {
 		char VerBuildTime[80];//版本生成时间，格式:yyyy-mm-dd HH:MM:SS;
 	} ModuleInfo[2];
 
+	
+
 	int WINAPI BAR_GetModuleInfo(ModuleInfo * p_ModuleInfo);
 	
 

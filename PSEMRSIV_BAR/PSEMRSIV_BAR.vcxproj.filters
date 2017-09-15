@@ -16,22 +16,34 @@
     <Filter Include="文档">
       <UniqueIdentifier>{87fb6b58-57e6-42d9-9b97-57e4218d1d92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="模块定义文件">
+      <UniqueIdentifier>{10254c48-1a47-45a2-b9e4-360a3e8c0bf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libusb">
+      <UniqueIdentifier>{77f47e41-bcdf-4829-9303-99dbf778a36d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libusb\include">
+      <UniqueIdentifier>{a209084b-14dc-409d-9708-26f87ef910a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libusb\lib">
+      <UniqueIdentifier>{fb6af2e8-6372-4e64-8ac8-5c42872ffa9c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="psemrsiv_bar.def">
-      <Filter>源文件</Filter>
+      <Filter>模块定义文件</Filter>
     </None>
-    <None Include="实名制闸机状态监测--供应商接口说明.docx">
+    <None Include="doc\实名制闸机状态监测--供应商接口说明.docx">
       <Filter>文档</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="psemrsiv_bar.h">
+    <ClInclude Include="include\psemrsiv_bar.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="psemrsiv_bar.cpp">
+    <ClCompile Include="src\psemrsiv_bar.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

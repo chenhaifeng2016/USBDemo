@@ -13,6 +13,8 @@
 #include <string>
 #include <iomanip>
 
+#include "psemrsiv_bar.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -45,6 +47,7 @@ BEGIN_MESSAGE_MAP(CUSBDemoDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_READ_DEVICE_INFO, &CUSBDemoDlg::OnBnClickedReadDeviceInfo)
 	ON_BN_CLICKED(IDC_LOAD_DLL, &CUSBDemoDlg::OnBnClickedLoadDll)
 	ON_BN_CLICKED(IDC_GET_STATUS, &CUSBDemoDlg::OnBnClickedGetStatus)
+	ON_BN_CLICKED(IDC_BUTTON6, &CUSBDemoDlg::OnBnClickedButton6)
 END_MESSAGE_MAP()
 
 
@@ -325,4 +328,16 @@ void CUSBDemoDlg::OnBnClickedGetStatus()
 
 	CString msg = pOut;
 	AfxMessageBox(msg);
+}
+
+
+void CUSBDemoDlg::OnBnClickedButton6()
+{
+	ModuleInfo modInfo;
+	memset(modInfo, 0x00, sizeof(modInfo));
+
+	BAR_GetModuleInfo(&modInfo);
+
+	TRACE("id=%s\n", modInfo[0].ID);
+	TRACE("id=%s\n", modInfo[1].ID);
 }
