@@ -12,6 +12,8 @@ WORD WINAPI BAR_Init(char *pIn, char* pOut)
 	if (usb.OpenDevice() != 0) {
 		char * status = "11111111";
 		memcpy(pOut, status, 8);
+
+		gLog.info("BAR_Init 返回1");
 		return 1;
 	}
 
@@ -19,6 +21,8 @@ WORD WINAPI BAR_Init(char *pIn, char* pOut)
 
 	char * status = "00000000";
 	memcpy(pOut, status, 8);
+
+	gLog.info("BAR_Init 返回0");
 	return 0;
 }
 
@@ -37,6 +41,7 @@ WORD WINAPI BAR_Uninit(char* pIn, char* pOut)
 		memcpy(pOut, status, 8);
 
 		r = 1; // 失败
+		gLog.info("BAR_Uninit 返回1");
 	}
 	else
 	{
@@ -44,6 +49,7 @@ WORD WINAPI BAR_Uninit(char* pIn, char* pOut)
 		memcpy(pOut, status, 8);
 
 		r = 0; //成功
+		gLog.info("BAR_Uninit 返回0");
 	}
 		
 
@@ -53,7 +59,8 @@ WORD WINAPI BAR_Uninit(char* pIn, char* pOut)
 WORD WINAPI BAR_ReadData(char *pIn, char *pOut, int *pOutLen)
 {
 	int r = 0;
-
+	std::string msg = "BAR_ReadData 参数";
+	msg += pIn;
 	
 	r = usb.ReadData(pIn, pOut, pOutLen);
 	
@@ -65,10 +72,12 @@ WORD WINAPI BAR_ReadData(char *pIn, char *pOut, int *pOutLen)
 		memcpy(pOut, status, *pOutLen);
 
 		r = 1;
+		msg += ", 返回结果1";
 	}
 	else
 	{
 		r = 0;
+		msg += ", 返回结果0";
 	}
 		
 
@@ -82,13 +91,18 @@ WORD WINAPI BAR_GetStatus(char *pIn, char* pOut)
 	{
 		char * status = "00000000";
 		memcpy(pOut, status, 8);
+
+		gLog.info("BAR_GetStatus 返回0");
+
 		return 0;
-		
 	}
 	else
 	{
 		char * status = "11111111";
 		memcpy(pOut, status, 8);
+
+		gLog.info("BAR_GetStatus 返回1");
+
 		return 1;
 	}
 }
@@ -101,11 +115,16 @@ WORD WINAPI BAR_GetSerial(char * pOut)
 	if (usb.ReadSerialNo(serialNo))
 	{
 		sprintf(pOut, "%s,%s,%s", serialNo, "新大陆", "EM20");
+
+		std::string msg = "BAR_GetSerial 返回";
+		msg += pOut;
+		gLog.info(msg);
+
 		return 0;
 	}
 	else
 	{
-		//sprintf(pOut, "%s,%s,%s", "11111111", "", "");
+		gLog.info("BAR_GetSerial 返回1");
 		return 1;
 	}
 }
@@ -124,11 +143,16 @@ WORD WINAPI BAR_GetDeviceInfo(char *pIn, char *pOut)
 	if (usb.ReadSerialNo(serialNo))
 	{
 		sprintf(pOut, "%s,%s,%s", serialNo, "新大陆", "EM20");
+
+		std::string msg = "BAR_GetDeviceInfo 返回";
+		msg += pOut;
+		gLog.info(msg);
+
 		return 0;
 	}
 	else
 	{
-		//sprintf(pOut, "%s,%s,%s", "11111111", "", "");
+		gLog.info("BAR_GetDeviceInfo 返回1");
 		return 1;
 	}
 }

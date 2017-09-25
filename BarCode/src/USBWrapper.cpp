@@ -231,7 +231,7 @@ int USBWrapper::ReadData(char *pIn, char *pData, int *pOutLen)
 
 			scanner_code = "";
 
-			gLog.info("通过限时方式获取" + return_code);
+			
 
 			return OK;
 		}
@@ -533,7 +533,8 @@ void USBWrapper::ScanThread(void * arg)
 
 		if (rlen < 0)
 		{
-			gLog.error("扫描线程扫描失败退出线程 if (rlen < 0)");
+			gLog.error("读设备失败， 重新打开设备。");
+
 			pThis->status = 0;
 
 			pThis->CloseDevice();
@@ -572,7 +573,7 @@ void USBWrapper::ScanThread(void * arg)
 			prevcode = code;
 			pThis->scanner_code = szRxBuf;
 			beginTime = endTime;
-			gLog.info2(szRxBuf);
+			gLog.info2("不同票直接返回");
 			OutputDebugString("不同票返回...\n");
 		}
 		else
@@ -590,7 +591,7 @@ void USBWrapper::ScanThread(void * arg)
 				prevcode = code;
 				pThis->scanner_code = szRxBuf;
 				beginTime = endTime;
-				gLog.info2(szRxBuf);
+				gLog.info2("同票超时返回");
 				OutputDebugString("同票超时返回...\n");
 				//prevcode = "";
 

@@ -65,8 +65,8 @@ void Config::ReadConfigFile()
 	}
 		
 
-	timeout = ::GetPrivateProfileInt("config", "timeout", 4000, path.c_str());
-	log = GetPrivateProfileInt("config", "log", 0, path.c_str());
+	timeout = ::GetPrivateProfileInt("config", "timeout", 4000, config_txt.c_str());
+	log = GetPrivateProfileInt("config", "log", 0, config_txt.c_str());
 
 	
 	infile.close();

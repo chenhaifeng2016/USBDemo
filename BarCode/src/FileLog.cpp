@@ -26,8 +26,11 @@ FileLog::~FileLog(void)
 
 void FileLog::Log(std::string log, int logLevel, std::string logFile)
 {
-	if (gConfig.log == 0)
-		return;
+	if (logLevel != LOG_LEVEL_ERROR) {
+		if (gConfig.log == 0)
+			return;
+	}
+	
 
 	std::fstream f;
 

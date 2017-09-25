@@ -216,6 +216,8 @@
     <ResourceCompile Include="USBDemo.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Debug\config.ini" />
+    <None Include="..\Release\config.ini" />
     <None Include="res\USBDemo.rc2" />
   </ItemGroup>
   <ItemGroup>

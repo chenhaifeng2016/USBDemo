@@ -30,6 +30,15 @@
     <Filter Include="第三方\BarCode\include">
       <UniqueIdentifier>{01a41568-aa38-4597-a3a8-bf5eec5d224d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="配置文件">
+      <UniqueIdentifier>{f9814de1-fef8-41a0-8881-187d46718411}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="配置文件\debug">
+      <UniqueIdentifier>{eb6a88b0-9550-4692-bf17-62217a182d59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="配置文件\release">
+      <UniqueIdentifier>{cf3786c3-7b2f-4275-9b46-42242e583319}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="USBDemoDlg.h">
@@ -73,6 +82,12 @@
   <ItemGroup>
     <None Include="res\USBDemo.rc2">
       <Filter>资源文件</Filter>
+    </None>
+    <None Include="..\Debug\config.ini">
+      <Filter>配置文件\debug</Filter>
+    </None>
+    <None Include="..\Release\config.ini">
+      <Filter>配置文件\release</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
